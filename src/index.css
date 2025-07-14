@@ -1,0 +1,10 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-orange-500: #f99026;
+  --color-orange-600: #e0801e;
+
+  --animate-spin-slow: spin 3s linear infinite;
+}
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
