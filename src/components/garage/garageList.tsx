@@ -55,7 +55,7 @@ const GarageList: React.FC = () => {
   const fetchGarages = async () => {
     try {
       const response = await axios.get(
-        'http://localhost:5000/api/users/admin/get-all-garages',
+        `${import.meta.env.VITE_API_URL}/api/users/admin/get-all-garages`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -65,7 +65,7 @@ const GarageList: React.FC = () => {
         garagesData.map(async (garage) => {
           try {
             const bookingsResponse = await axios.get(
-              `http://localhost:5000/api/users/admin/get-garage-booking-summary/${garage._id}`,
+              `${import.meta.env.VITE_API_URL}/api/users/admin/get-garage-booking-summary/${garage._id}`,
               { headers: { Authorization: `Bearer ${token}` } }
             );
 
@@ -103,7 +103,7 @@ const GarageList: React.FC = () => {
     setIsDeleting(garageId);
     try {
       await axios.delete(
-        `http://localhost:5000/api/users/admin/delete-garage/${garageId}`,
+        `${import.meta.env.VITE_API_URL}/api/users/admin/delete-garage/${garageId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

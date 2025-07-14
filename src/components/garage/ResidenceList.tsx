@@ -36,7 +36,7 @@ const ResidenceList: React.FC = () => {
   const fetchResidences = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/merchants/residence/search",
+        `${import.meta.env.VITE_API_URL}/api/merchants/residence/search`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setResidences(res.data.data);
@@ -48,7 +48,7 @@ const ResidenceList: React.FC = () => {
   const fetchResidenceDetails = async (id: string) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/merchants/residence/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/merchants/residence/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSelectedResidence(res.data.data);
@@ -61,7 +61,7 @@ const ResidenceList: React.FC = () => {
   const fetchBookings = async (id: string) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/merchants/residence/bookings/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/merchants/residence/bookings/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setBookings(res.data.data);
@@ -77,7 +77,7 @@ const ResidenceList: React.FC = () => {
 
   try {
     await axios.delete(
-  `http://localhost:5000/api/users/admin/delete-residence/${id}`,
+  `${import.meta.env.VITE_API_URL}/api/users/admin/delete-residence/${id}`,
   { headers: { Authorization: `Bearer ${token}` } }
 );
 

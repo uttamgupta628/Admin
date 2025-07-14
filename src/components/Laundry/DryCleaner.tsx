@@ -36,7 +36,7 @@ const DryCleanerList: React.FC = () => {
   const fetchDryCleaners = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/users/admin/get-all-dry-cleaners",
+        `${import.meta.env.VITE_API_URL}/api/users/admin/get-all-dry-cleaners`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

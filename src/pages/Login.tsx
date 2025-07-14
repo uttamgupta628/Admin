@@ -47,7 +47,7 @@ const AdminLogin: React.FC = () => {
   const onSendOtp: SubmitHandler<EmailInputs> = async (data) => {
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/users/admin/send-otp", {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/users/admin/send-otp`, {
         email: data.email,
       });
       setEmail(data.email);
@@ -64,7 +64,7 @@ const AdminLogin: React.FC = () => {
   const onVerifyOtp: SubmitHandler<OtpInputs> = async (data) => {
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/api/users/admin/verify-otp", {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/users/admin/verify-otp`, {
         email: data.email,
         otp: data.otp,
       });

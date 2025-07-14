@@ -38,7 +38,7 @@ export default function AllMerchantsTable() {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/users/admin/get-all-merchants', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/admin/get-all-merchants`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export default function AllMerchantsTable() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/users/admin/delete-merchant/${merchantId}`,
+        `${import.meta.env.VITE_API_URL}/api/users/admin/delete-merchant/${merchantId}`,
         {
           method: 'DELETE',
           headers: {

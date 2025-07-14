@@ -27,7 +27,7 @@ export default function AllUsersTable() {
 
     try {
       const res = await fetch(
-        'http://localhost:5000/api/users/admin/get-all-users',
+        `${import.meta.env.VITE_API_URL}/api/users/admin/get-all-users`,
         {
           method: 'GET',
           headers: {
@@ -63,7 +63,7 @@ export default function AllUsersTable() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/users/admin/delete-user/${userId}`,
+        `${import.meta.env.VITE_API_URL}/api/users/admin/delete-user/${userId}`,
         {
           method: 'DELETE',
           headers: {

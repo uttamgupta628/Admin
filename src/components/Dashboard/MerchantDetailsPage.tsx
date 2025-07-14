@@ -16,7 +16,7 @@ export default function MerchantDetailsPage() {
     }
 
     try {
-      const res = await fetch(`http://localhost:5000/api/users/admin/get-merchant/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/admin/get-merchant/${id}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,

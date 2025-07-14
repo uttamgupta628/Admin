@@ -49,7 +49,7 @@ const ParkingLotList: React.FC = () => {
   const fetchParkingLots = async () => {
     try {
       const res = await axios.get(
-        'http://localhost:5000/api/users/admin/get-list-of-parking-lots',
+        `${import.meta.env.VITE_API_URL}/api/users/admin/get-list-of-parking-lots`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setParkingLots(res.data.data);
@@ -61,7 +61,7 @@ const ParkingLotList: React.FC = () => {
   const fetchBookings = async (lotId: string) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/users/admin/get-bookings-by-parking-lot/${lotId}`,
+        `${import.meta.env.VITE_API_URL}/api/users/admin/get-bookings-by-parking-lot/${lotId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setBookings(res.data.data);
@@ -74,7 +74,7 @@ const ParkingLotList: React.FC = () => {
   const fetchParkingLotDetails = async (id: string) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/users/admin/get-parking-lot/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/users/admin/get-parking-lot/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSelectedLot(res.data.data);
@@ -90,7 +90,7 @@ const ParkingLotList: React.FC = () => {
 
     try {
       await axios.delete(
-        `http://localhost:5000/api/users/admin/delete-parking-lot/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/users/admin/delete-parking-lot/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSelectedLot(null);
