@@ -1,13 +1,13 @@
 import NavbarWrapper from '@/components/Wrapper/NavbarWrapper';
-import UserGrowthChart from '@/components/Dashboard/UserGrowthChart';
-import GenderRatioChart from '@/components/Dashboard/GenderRatioChart';
-import ServiceUsageChart from '@/components/Dashboard/ServiceUsageChart';
+// import UserGrowthChart from '@/components/Dashboard/UserGrowthChart';
+// import GenderRatioChart from '@/components/Dashboard/GenderRatioChart';
+// import ServiceUsageChart from '@/components/Dashboard/ServiceUsageChart';
 import TopMerchantsTable from '@/components/Dashboard/TopMerchantsTable';
 import TopUsersTable from '@/components/Dashboard/TopUsersTable';
 import RecentTransactions from '@/components/Dashboard/RecentTransactions';
-import RevenueSummary from '@/components/Dashboard/RevenueSummary';
-import PopularServicesChart from '@/components/Dashboard/PopularServicesChart';
-import LoginActivityChart from '@/components/Dashboard/LoginActivityChart';
+// import RevenueSummary from '@/components/Dashboard/RevenueSummary';
+// import PopularServicesChart from '@/components/Dashboard/PopularServicesChart';
+// import LoginActivityChart from '@/components/Dashboard/LoginActivityChart';
 // import SubscriptionPlansChart from '@/components/Dashboard/SubscriptionPlansChart';
 // import AppRatingsFeedback from '@/components/Dashboard/AppRatingsFeedback';
 import { useNavigate } from 'react-router-dom';
@@ -58,18 +58,18 @@ function Home() {
         </div>
 
         {/* Revenue Summary Cards */}
-        <RevenueSummary />
+        {/* <RevenueSummary />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <UserGrowthChart />
           <GenderRatioChart />
           <ServiceUsageChart />
-        </div>
+        </div> */}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <PopularServicesChart />
           <LoginActivityChart />
-        </div>
+        </div> */}
 
         <div className="w-full">
           <TopMerchantsTable />
