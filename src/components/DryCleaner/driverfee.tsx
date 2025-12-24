@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -40,7 +40,7 @@ const GlobalPricingManagement = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const [isAdmin, ] = useState(true);
 
   // Fetch current pricing
   const fetchCurrentPricing = async () => {
