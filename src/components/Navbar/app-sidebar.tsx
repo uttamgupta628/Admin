@@ -68,11 +68,6 @@ const data = {
           url: '/laundry-owners',
         },
         {
-          title: 'Dry Cleaner Owners',
-          url: '/dry-cleaner-owners',
-        },
-
-        {
           title: 'Customer Reviews',
           url: '#',
         },
@@ -112,6 +107,22 @@ const data = {
         },
       ],
     },
+    {
+  title: 'Dry Cleaners',
+  url: '/dry-cleaners',
+  icon: Shirt,
+  items: [
+    {
+      title: 'All Dry Cleaners',
+      url: '/dry-cleaner-owners',
+    },
+    {
+      title: 'Set driver Fees',
+      url: '/driver-fees',
+    },
+  ],
+},
+
     {
       title: 'Food Delivery',
       url: '#',

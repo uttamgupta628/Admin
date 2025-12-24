@@ -1,8 +1,6 @@
 import ParkingLotList from '@/components/garage/parkinglot';
 import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-
-// Lazy load components
 const Home = lazy(() => import('../pages/(dashboard)/Home'));
 const Login = lazy(() => import('../pages/Login'));
 const LaundryOwners = lazy(() => import('@/pages/(Laundry)/LaundryOwners'));
@@ -11,8 +9,10 @@ const AllMerchantsTable = lazy(() => import('@/components/Dashboard/TopMerchants
 const AllUsersTable = lazy(() => import('@/components/Dashboard/TopUsersTable'));
 const MerchantDetailsPage = lazy(() => import('@/components/Dashboard/MerchantDetailsPage'));
 const AllgaragesTable = lazy(() => import('@/components/garage/garageList'));
-const AllDryCleaner= lazy(() => import('@/components/Laundry/DryCleaner'));
+const AllDryCleaner= lazy(() => import('@/components/DryCleaner/DryCleaner'));
 const ResidenceParking= lazy(() => import('@/components/garage/ResidenceList'));
+const DriverRate = lazy(() => import('@/components/DryCleaner/driverfee'));
+
 // Define routes
 const router = createBrowserRouter([
   {
@@ -44,7 +44,12 @@ const router = createBrowserRouter([
   },{
     path:'/dry-cleaner-owners',
     element: <AllDryCleaner/>,
-  },{
+  },
+  {
+    path:'/driver-fees',
+    element: <DriverRate/>,
+  },
+  {
     path: '/parking-lot',
     element: <ParkingLotList />,
   },
