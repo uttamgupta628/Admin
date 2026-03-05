@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { CustomArrowProps } from "react-slick";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import { useNavigate } from 'react-router-dom';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { CustomArrowProps } from 'react-slick';
 
 interface Address {
   street: string;
@@ -61,11 +61,12 @@ const DryCleanerList: React.FC = () => {
   const [dryCleaners, setDryCleaners] = useState<DryCleaner[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedDryCleaner, setSelectedDryCleaner] = useState<DryCleaner | null>(null);
+  const [selectedDryCleaner, setSelectedDryCleaner] =
+    useState<DryCleaner | null>(null);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const navigate = useNavigate();
-  
-  const token = localStorage.getItem("token");
+
+  const token = localStorage.getItem('token');
 
   const fetchDryCleaners = async () => {
     try {
@@ -75,7 +76,7 @@ const DryCleanerList: React.FC = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      
+
       const cleanersData: DryCleaner[] = response.data.data;
 
       // Fetch additional booking data for each dry cleaner
@@ -110,7 +111,7 @@ const DryCleanerList: React.FC = () => {
       setDryCleaners(cleanersWithSummary);
     } catch (err: any) {
       console.error(err);
-      setError("Failed to fetch dry cleaners");
+      setError('Failed to fetch dry cleaners');
     } finally {
       setLoading(false);
     }
@@ -126,8 +127,14 @@ const DryCleanerList: React.FC = () => {
         }
       );
       setDryCleaners((prev) => prev.filter((d) => d._id !== cleanerId));
+
+      // Close modal if the deleted cleaner was being viewed
+      if (selectedDryCleaner?._id === cleanerId) {
+        setSelectedDryCleaner(null);
+      }
     } catch (error) {
       console.error('Failed to delete dry cleaner:', error);
+      alert('Failed to delete dry cleaner. Please try again.');
     } finally {
       setIsDeleting(null);
     }
@@ -234,7 +241,8 @@ const DryCleanerList: React.FC = () => {
               Dry Cleaner Management
             </h1>
             <p className="mt-1 text-sm text-gray-500">
-              {dryCleaners.length} {dryCleaners.length === 1 ? 'dry cleaner' : 'dry cleaners'}{' '}
+              {dryCleaners.length}{' '}
+              {dryCleaners.length === 1 ? 'dry cleaner' : 'dry cleaners'}{' '}
               registered in the system
             </p>
           </div>
@@ -311,25 +319,45 @@ const DryCleanerList: React.FC = () => {
                   </div>
 
                   <p className="text-gray-600 text-sm mt-2 line-clamp-2">
-                    {cleaner.about || "No description available"}
+                    {cleaner.about || 'No description available'}
                   </p>
 
                   <div className="mt-3 space-y-2 text-sm">
                     <p className="text-gray-700 flex items-center">
-                      <svg className="w-4 h-4 mr-2 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                      <svg
+                        className="w-4 h-4 mr-2 text-gray-500"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                       {cleaner.address?.city}, {cleaner.address?.state}
                     </p>
                     <p className="text-gray-700 flex items-center">
-                      <svg className="w-4 h-4 mr-2 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                      <svg
+                        className="w-4 h-4 mr-2 text-gray-500"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
                         <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                       </svg>
                       {cleaner.phoneNumber}
                     </p>
                     <p className="text-gray-700 flex items-center">
-                      <svg className="w-4 h-4 mr-2 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                      <svg
+                        className="w-4 h-4 mr-2 text-gray-500"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                       {cleaner.contactPerson}
                     </p>
@@ -422,7 +450,8 @@ const DryCleanerList: React.FC = () => {
               </button>
 
               <div className="h-64 bg-gray-200 relative">
-                {selectedDryCleaner.shopimage && selectedDryCleaner.shopimage.length > 0 ? (
+                {selectedDryCleaner.shopimage &&
+                selectedDryCleaner.shopimage.length > 0 ? (
                   <Slider
                     {...{
                       dots: true,
@@ -486,7 +515,10 @@ const DryCleanerList: React.FC = () => {
                     </h3>
                     <p className="text-gray-700">
                       <span className="font-medium">Address:</span>{' '}
-                      {selectedDryCleaner.address?.street}, {selectedDryCleaner.address?.city}, {selectedDryCleaner.address?.state} - {selectedDryCleaner.address?.pincode}
+                      {selectedDryCleaner.address?.street},{' '}
+                      {selectedDryCleaner.address?.city},{' '}
+                      {selectedDryCleaner.address?.state} -{' '}
+                      {selectedDryCleaner.address?.pincode}
                     </p>
                     <p className="text-gray-700 mt-1">
                       <span className="font-medium">Phone:</span>{' '}
@@ -512,7 +544,9 @@ const DryCleanerList: React.FC = () => {
                     </p>
                     <p className="text-gray-700 mt-1">
                       <span className="font-medium">Joined:</span>{' '}
-                      {new Date(selectedDryCleaner.createdAt).toLocaleDateString()}
+                      {new Date(
+                        selectedDryCleaner.createdAt
+                      ).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
@@ -525,59 +559,84 @@ const DryCleanerList: React.FC = () => {
                     </h3>
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <p className="text-gray-700">
-                        <span className="font-medium">Name:</span> {selectedDryCleaner.owner.fullName}
+                        <span className="font-medium">Name:</span>{' '}
+                        {selectedDryCleaner.owner.fullName}
                       </p>
                       <p className="text-gray-700 mt-1">
-                        <span className="font-medium">Email:</span> {selectedDryCleaner.owner.email}
+                        <span className="font-medium">Email:</span>{' '}
+                        {selectedDryCleaner.owner.email}
                       </p>
                       <p className="text-gray-700 mt-1">
-                        <span className="font-medium">Phone:</span> {selectedDryCleaner.owner.phoneNumber}
+                        <span className="font-medium">Phone:</span>{' '}
+                        {selectedDryCleaner.owner.phoneNumber}
                       </p>
                     </div>
                   </div>
                 )}
 
                 {/* Operating Hours */}
-                {selectedDryCleaner.hoursOfOperation && selectedDryCleaner.hoursOfOperation.length > 0 && (
-                  <div className="mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                      Operating Hours
-                    </h3>
-                    <div className="space-y-2">
-                      {selectedDryCleaner.hoursOfOperation.map((hour, idx) => (
-                        <div key={idx} className="flex justify-between items-center bg-gray-50 px-4 py-2 rounded-lg">
-                          <span className="font-medium text-gray-700">{hour.day}</span>
-                          <span className="text-gray-600">{hour.open} - {hour.close}</span>
-                        </div>
-                      ))}
+                {selectedDryCleaner.hoursOfOperation &&
+                  selectedDryCleaner.hoursOfOperation.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                        Operating Hours
+                      </h3>
+                      <div className="space-y-2">
+                        {selectedDryCleaner.hoursOfOperation.map(
+                          (hour, idx) => (
+                            <div
+                              key={idx}
+                              className="flex justify-between items-center bg-gray-50 px-4 py-2 rounded-lg"
+                            >
+                              <span className="font-medium text-gray-700">
+                                {hour.day}
+                              </span>
+                              <span className="text-gray-600">
+                                {hour.open} - {hour.close}
+                              </span>
+                            </div>
+                          )
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Services */}
-                {selectedDryCleaner.services && selectedDryCleaner.services.length > 0 && (
-                  <div className="mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                      Services Offered
-                    </h3>
-                    <div className="space-y-3">
-                      {selectedDryCleaner.services.map((service, idx) => (
-                        <div key={idx} className="flex items-center justify-between bg-gray-50 px-4 py-3 rounded-lg">
-                          <div>
-                            <div className="font-medium text-gray-900">{service.name}</div>
-                            <div className="text-sm text-gray-500">{service.category}</div>
+                {selectedDryCleaner.services &&
+                  selectedDryCleaner.services.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                        Services Offered
+                      </h3>
+                      <div className="space-y-3">
+                        {selectedDryCleaner.services.map((service, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center justify-between bg-gray-50 px-4 py-3 rounded-lg"
+                          >
+                            <div>
+                              <div className="font-medium text-gray-900">
+                                {service.name}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {service.category}
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-bold text-gray-900">
+                                ₹{service.price}
+                              </div>
+                              {service.starchLevel > 0 && (
+                                <div className="text-sm text-gray-500">
+                                  Starch Level: {service.starchLevel}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                          <div className="text-right">
-                            <div className="font-bold text-gray-900">₹{service.price}</div>
-                            {service.starchLevel > 0 && (
-                              <div className="text-sm text-gray-500">Starch Level: {service.starchLevel}</div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
             </div>
           </div>

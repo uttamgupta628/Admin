@@ -10,7 +10,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 
-const API_BASE_URL = '${import.meta.env.VITE_API_URL}/api';
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 
 // Types
 interface GlobalPricing {
@@ -50,7 +50,7 @@ const GlobalPricingManagement = () => {
       setFetching(true);
       setError(null);
 
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('token');
 
       const response = await fetch(
         `${API_BASE_URL}/users/admin/get-global-pricing`,
@@ -96,7 +96,7 @@ const GlobalPricingManagement = () => {
       setError(null);
       setSuccess(null);
 
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('token');
 
       const payload: any = {
         pricePerKm: price,
