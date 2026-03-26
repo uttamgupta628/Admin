@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import NavbarWrapper from '@/components/Wrapper/NavbarWrapper';
 import { useNavigate } from 'react-router-dom';
 import {
-  // BarChart,
-  // Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -25,9 +23,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Activity,
-  // UserCheck,
   Briefcase,
-  // Calendar,
   LogOut,
 } from 'lucide-react';
 import TopMerchantsTable from '@/components/Dashboard/TopMerchantsTable';
@@ -54,7 +50,6 @@ interface RecentOrder {
   serviceName: string;
 }
 
-// Mock data for charts (replace with API calls)
 const mockUserGrowth = [
   { month: 'Jan', users: 120, merchants: 40 },
   { month: 'Feb', users: 150, merchants: 45 },
@@ -87,7 +82,6 @@ function Home() {
         alert('No admin token found!');
         return;
       }
-
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/users/admin/logout`,
         {
@@ -95,7 +89,6 @@ function Home() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       const data = await res.json();
       if (res.ok) {
         alert(data.message);
@@ -110,39 +103,34 @@ function Home() {
     }
   };
 
-  // Fetch dashboard summary data (same as before)
   const fetchDashboardStats = async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
     try {
-      // Replace with real API endpoints
-      const merchantsRes = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/users/admin/get-all-merchants`,
-        {
+      const [merchantsRes, usersRes] = await Promise.all([
+        fetch(
+          `${import.meta.env.VITE_API_URL}/api/users/admin/get-all-merchants`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        ),
+        fetch(`${import.meta.env.VITE_API_URL}/api/users/admin/get-all-users`, {
           headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      const merchantsData = await merchantsRes.json();
-      const totalMerchants =
-        merchantsData.statusCode === 200
-          ? merchantsData.data.merchants.length
-          : 0;
+        }),
+      ]);
 
-      const usersRes = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/users/admin/get-all-users`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const merchantsData = await merchantsRes.json();
       const usersData = await usersRes.json();
-      const totalUsers =
-        usersData.statusCode === 200 ? usersData.data.users.length : 0;
 
       setStats({
-        totalMerchants,
-        totalUsers,
-        totalRevenue: 125000, // replace with actual data
+        totalMerchants:
+          merchantsData.statusCode === 200
+            ? merchantsData.data.merchants.length
+            : 0,
+        totalUsers:
+          usersData.statusCode === 200 ? usersData.data.users.length : 0,
+        totalRevenue: 125000,
         totalOrders: 452,
         revenueChange: 12.5,
         ordersChange: 8.3,
@@ -156,7 +144,6 @@ function Home() {
     }
   };
 
-  // Fetch recent orders from backend
   const fetchRecentOrders = async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -164,15 +151,12 @@ function Home() {
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/users/admin/recent-orders`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       const data = await res.json();
       if (data.statusCode === 200) {
         setRecentOrders(data.data);
       } else {
-        console.error('Failed to fetch recent orders', data.message);
         setRecentOrders([]);
       }
     } catch (error) {
@@ -196,7 +180,15 @@ function Home() {
     changeType = 'increase',
     prefix = '',
     suffix = '',
-  }: any) => (
+  }: {
+    title: string;
+    value: number | string;
+    icon: any;
+    change?: number;
+    changeType?: 'increase' | 'decrease';
+    prefix?: string;
+    suffix?: string;
+  }) => (
     <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between">
         <div>
@@ -297,6 +289,7 @@ function Home() {
 
           {/* Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Line Chart */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
@@ -330,6 +323,7 @@ function Home() {
               </ResponsiveContainer>
             </div>
 
+            {/* Pie Chart */}
             <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
@@ -352,12 +346,17 @@ function Home() {
                       `${name}: ${(percent * 100).toFixed(0)}%`
                     }
                   >
-                    {mockServiceUsage.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
+                    {mockServiceUsage.map(
+                      (
+                        _,
+                        index // ✅ fixed: removed entry.color
+                      ) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      )
+                    )}
                   </Pie>
                   <Tooltip />
                   <Legend />
@@ -366,7 +365,7 @@ function Home() {
             </div>
           </div>
 
-          {/* Recent Orders Activity - Now with real data */}
+          {/* Recent Orders */}
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
@@ -387,24 +386,21 @@ function Home() {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Order ID
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        User
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Service
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Amount
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Date
-                      </th>
+                      {[
+                        'Order ID',
+                        'User',
+                        'Service',
+                        'Amount',
+                        'Status',
+                        'Date',
+                      ].map((h) => (
+                        <th
+                          key={h}
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          {h}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-100">
@@ -414,7 +410,7 @@ function Home() {
                         className="hover:bg-gray-50 transition"
                       >
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {order.id.slice(-6)}
+                          #{order.id.slice(-6)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                           {order.user}
@@ -423,7 +419,7 @@ function Home() {
                           {order.serviceName}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          ₹{order.amount}
+                          ₹{order.amount.toLocaleString()}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
@@ -439,7 +435,7 @@ function Home() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(order.date).toLocaleDateString()}
+                          {new Date(order.date).toLocaleDateString('en-IN')}
                         </td>
                       </tr>
                     ))}
@@ -453,7 +449,7 @@ function Home() {
             )}
           </div>
 
-          {/* Top Merchants and Users Tables */}
+          {/* Top Merchants and Users */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="p-4 border-b border-gray-100">
