@@ -8,11 +8,12 @@ import {
   CheckCircle,
   History,
   RefreshCw,
+  ArrowLeft,
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 
-// Types
 interface GlobalPricing {
   _id: string;
   pricePerKm: number;
@@ -30,7 +31,8 @@ interface ApiResponse {
 }
 
 const GlobalPricingManagement = () => {
-  // State Management
+  const navigate = useNavigate(); // ✅ moved inside the component
+
   const [currentPricing, setCurrentPricing] = useState<GlobalPricing | null>(
     null
   );
@@ -44,14 +46,11 @@ const GlobalPricingManagement = () => {
   const [showHistory, setShowHistory] = useState(false);
   const [isAdmin] = useState(true);
 
-  // Fetch current pricing
   const fetchCurrentPricing = async () => {
     try {
       setFetching(true);
       setError(null);
-
       const token = localStorage.getItem('token');
-
       const response = await fetch(
         `${API_BASE_URL}/users/admin/get-global-pricing`,
         {
@@ -61,55 +60,36 @@ const GlobalPricingManagement = () => {
           },
         }
       );
-
       const data: ApiResponse = await response.json();
-
-      if (!response.ok) {
+      if (!response.ok)
         throw new Error(data.message || 'Failed to fetch pricing');
-      }
-
       setCurrentPricing(data.data);
       setPricePerKm(data.data.pricePerKm.toString());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch pricing');
-      console.error('Fetch pricing error:', err);
     } finally {
       setFetching(false);
     }
   };
 
-  // Set new global pricing
   const handleSetPricing = async () => {
     const price = parseFloat(pricePerKm);
     if (isNaN(price) || price <= 0) {
       setError('Please enter a valid price greater than 0');
       return;
     }
-
     if (price > 1000) {
       setError('Price per km cannot exceed ₹1000');
       return;
     }
-
     try {
       setLoading(true);
       setError(null);
       setSuccess(null);
-
       const token = localStorage.getItem('token');
-
-      const payload: any = {
-        pricePerKm: price,
-      };
-
-      if (effectiveFrom) {
-        payload.effectiveFrom = effectiveFrom;
-      }
-
-      if (reason.trim()) {
-        payload.reason = reason.trim();
-      }
-
+      const payload: any = { pricePerKm: price };
+      if (effectiveFrom) payload.effectiveFrom = effectiveFrom;
+      if (reason.trim()) payload.reason = reason.trim();
       const response = await fetch(
         `${API_BASE_URL}/users/admin/get-current-price-per-km`,
         {
@@ -121,31 +101,23 @@ const GlobalPricingManagement = () => {
           body: JSON.stringify(payload),
         }
       );
-
       const data: ApiResponse = await response.json();
-
-      if (!response.ok) {
+      if (!response.ok)
         throw new Error(data.message || 'Failed to set pricing');
-      }
-
       setSuccess(`Global pricing successfully set to ₹${price}/km`);
       setCurrentPricing(data.data.pricing);
-
       setEffectiveFrom('');
       setReason('');
-
       setTimeout(() => fetchCurrentPricing(), 1000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to set pricing');
-      console.error('Set pricing error:', err);
     } finally {
       setLoading(false);
     }
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-IN', {
+    return new Date(dateString).toLocaleDateString('en-IN', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -154,22 +126,17 @@ const GlobalPricingManagement = () => {
     });
   };
 
-  const getMinDate = () => {
-    const today = new Date();
-    return today.toISOString().split('T')[0];
-  };
+  const getMinDate = () => new Date().toISOString().split('T')[0];
 
   useEffect(() => {
     fetchCurrentPricing();
   }, []);
-
   useEffect(() => {
     if (success) {
       const timer = setTimeout(() => setSuccess(null), 5000);
       return () => clearTimeout(timer);
     }
   }, [success]);
-
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => setError(null), 5000);
@@ -236,23 +203,54 @@ const GlobalPricingManagement = () => {
     >
       <div style={{ maxWidth: '64rem', margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ marginBottom: '2rem' }}>
-          <h1
+        <div
+          style={{
+            marginBottom: '2rem',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '1rem',
+          }}
+        >
+          <button
+            onClick={() => navigate(-1)} // ✅ correct casing, inside component
             style={{
-              fontSize: '2.25rem',
-              fontWeight: 'bold',
-              color: '#111827',
-              marginBottom: '0.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '2.5rem',
+              height: '2.5rem',
+              background: 'white',
+              border: 'none',
+              borderRadius: '0.5rem',
+              cursor: 'pointer',
+              boxShadow: '0 1px 3px rgb(0 0 0 / 0.1)',
+              flexShrink: 0,
+              marginTop: '0.25rem',
             }}
+            title="Go back"
           >
-            Global Pricing Management
-          </h1>
-          <p style={{ color: '#6b7280' }}>
-            Set and manage pricing for all drivers in the system
-          </p>
+            <ArrowLeft
+              style={{ width: '1.25rem', height: '1.25rem', color: '#374151' }}
+            />
+          </button>
+          <div>
+            <h1
+              style={{
+                fontSize: '2.25rem',
+                fontWeight: 'bold',
+                color: '#111827',
+                marginBottom: '0.5rem',
+              }}
+            >
+              Global Pricing Management
+            </h1>
+            <p style={{ color: '#6b7280' }}>
+              Set and manage pricing for all drivers in the system
+            </p>
+          </div>
         </div>
 
-        {/* Alert Messages */}
+        {/* Error Alert */}
         {error && (
           <div
             style={{
@@ -303,6 +301,7 @@ const GlobalPricingManagement = () => {
           </div>
         )}
 
+        {/* Success Alert */}
         {success && (
           <div
             style={{
@@ -465,7 +464,6 @@ const GlobalPricingManagement = () => {
                     ₹{currentPricing.pricePerKm}
                   </div>
                 </div>
-
                 <div
                   style={{
                     display: 'flex',
@@ -505,7 +503,6 @@ const GlobalPricingManagement = () => {
                       </p>
                     </div>
                   </div>
-
                   {currentPricing.reason && (
                     <div
                       style={{
@@ -538,7 +535,6 @@ const GlobalPricingManagement = () => {
                       </div>
                     </div>
                   )}
-
                   <div
                     style={{
                       display: 'flex',
@@ -595,7 +591,6 @@ const GlobalPricingManagement = () => {
             >
               Set New Pricing
             </h2>
-
             <div
               style={{
                 display: 'flex',
@@ -603,7 +598,6 @@ const GlobalPricingManagement = () => {
                 gap: '1.25rem',
               }}
             >
-              {/* Price Input */}
               <div>
                 <label
                   style={{
@@ -664,7 +658,6 @@ const GlobalPricingManagement = () => {
                 </p>
               </div>
 
-              {/* Effective From */}
               <div>
                 <label
                   style={{
@@ -702,7 +695,6 @@ const GlobalPricingManagement = () => {
                 </p>
               </div>
 
-              {/* Reason */}
               <div>
                 <label
                   style={{
@@ -732,7 +724,6 @@ const GlobalPricingManagement = () => {
                 />
               </div>
 
-              {/* Submit Button */}
               <button
                 onClick={handleSetPricing}
                 disabled={loading}
@@ -769,7 +760,6 @@ const GlobalPricingManagement = () => {
               </button>
             </div>
 
-            {/* Info Box */}
             <div
               style={{
                 marginTop: '1.5rem',
@@ -849,7 +839,6 @@ const GlobalPricingManagement = () => {
               {showHistory ? 'Hide' : 'Show'}
             </span>
           </button>
-
           {showHistory && (
             <div
               style={{
@@ -873,20 +862,10 @@ const GlobalPricingManagement = () => {
       </div>
 
       <style>{`
-        .spin {
-          animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        input:focus, textarea:focus {
-          outline: 2px solid #3b82f6;
-          outline-offset: 2px;
-        }
-        button:hover:not(:disabled) {
-          opacity: 0.9;
-        }
+        .spin { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        input:focus, textarea:focus { outline: 2px solid #3b82f6; outline-offset: 2px; }
+        button:hover:not(:disabled) { opacity: 0.9; }
       `}</style>
     </div>
   );

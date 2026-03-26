@@ -1,6 +1,37 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Trash2, Eye, X, CreditCard, User, Mail, Phone, Building } from 'lucide-react';
+import {
+  Trash2,
+  Eye,
+  X,
+  CreditCard,
+  User,
+  Mail,
+  Phone,
+  Building,
+  ArrowLeft,
+  TrendingUp,
+  Users,
+  Briefcase,
+  Banknote,
+  Search,
+  Download,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from 'recharts';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import {
   Table,
@@ -11,6 +42,7 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface Merchant {
   _id: string;
@@ -45,8 +77,14 @@ interface BankDetails {
 
 export default function AllMerchantsTable() {
   const [merchants, setMerchants] = useState<Merchant[]>([]);
+  const [filteredMerchants, setFilteredMerchants] = useState<Merchant[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedMerchant, setSelectedMerchant] = useState<Merchant | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const [selectedMerchant, setSelectedMerchant] = useState<Merchant | null>(
+    null
+  );
   const [bankDetails, setBankDetails] = useState<BankDetails | null>(null);
   const [loadingBankDetails, setLoadingBankDetails] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
@@ -61,18 +99,18 @@ export default function AllMerchantsTable() {
     }
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/admin/get-all-merchants`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/users/admin/get-all-merchants`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = await res.json();
-
       if (data.statusCode === 200) {
-        console.log('Merchants data:', data.data.merchants); // Debug log
         setMerchants(data.data.merchants);
       } else {
         console.error('Failed to fetch merchants', data.message);
@@ -94,52 +132,24 @@ export default function AllMerchantsTable() {
 
     setLoadingBankDetails(true);
     try {
-      // Try the most likely correct endpoint based on your backend structure
-      const endpoints = [
-        // First try: Generic admin bank details endpoint with userType
-        `${import.meta.env.VITE_API_URL}/api/users/admin/bank-details/${merchantId}?userType=merchant`,
-        // Second try: Specific merchant bank details endpoint
-        `${import.meta.env.VITE_API_URL}/api/users/admin/merchant/bank-details/${merchantId}?userType=merchant`,
-        // Third try: Alternative merchant endpoint
-        `${import.meta.env.VITE_API_URL}/api/merchants/bank-details/${merchantId}`,
-        // Fourth try: Direct merchant API
-        `${import.meta.env.VITE_API_URL}/api/merchant/${merchantId}/bank-details`,
-      ];
-
-      for (const endpoint of endpoints) {
-        try {
-          console.log(`Trying endpoint: ${endpoint}`);
-          const res = await fetch(endpoint, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          if (res.ok) {
-            const data = await res.json();
-            if (data.statusCode === 200 && data.data) {
-              setBankDetails(data.data);
-              console.log(`Success with endpoint: ${endpoint}`);
-              return;
-            }
-          } else if (res.status === 404) {
-            console.log(`404 for endpoint: ${endpoint}`);
-            continue; // Try next endpoint
-          }
-        } catch (endpointError) {
-          console.log(`Error with endpoint ${endpoint}:`, endpointError);
-          continue; // Try next endpoint
+      const endpoint = `${import.meta.env.VITE_API_URL}/api/users/admin/bank-details/${merchantId}?userType=merchant`;
+      const res = await fetch(endpoint, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.statusCode === 200 && data.data) {
+          setBankDetails(data.data);
+          return;
         }
       }
-
-      // If all endpoints failed, set bank details to null
-      console.log('All endpoints failed, no bank details found');
       setBankDetails(null);
-
-    } catch (error: any) {
-      console.error('General fetch bank details error:', error);
+    } catch (error) {
+      console.error('Fetch bank details error:', error);
       setBankDetails(null);
     } finally {
       setLoadingBankDetails(false);
@@ -154,7 +164,8 @@ export default function AllMerchantsTable() {
       return;
     }
 
-    if (!window.confirm('Are you sure you want to delete this merchant?')) return;
+    if (!window.confirm('Are you sure you want to delete this merchant?'))
+      return;
 
     try {
       const res = await fetch(
@@ -167,9 +178,7 @@ export default function AllMerchantsTable() {
           },
         }
       );
-
       const data = await res.json();
-
       if (data.statusCode === 200) {
         alert('Merchant deleted successfully!');
         fetchMerchants();
@@ -184,14 +193,10 @@ export default function AllMerchantsTable() {
   const handleViewDetails = (merchant: Merchant) => {
     setSelectedMerchant(merchant);
     setShowDetailsModal(true);
-    
-    // Check if bank details are already in the merchant object
     if (merchant.bankDetails) {
-      console.log('Bank details found in merchant object:', merchant.bankDetails);
       setBankDetails(merchant.bankDetails);
       setLoadingBankDetails(false);
     } else {
-      console.log('No bank details in merchant object, trying API...');
       setBankDetails(null);
       fetchBankDetails(merchant._id);
     }
@@ -212,14 +217,93 @@ export default function AllMerchantsTable() {
     return types.length ? types.join(', ') : 'N/A';
   };
 
-  const getMerchantServices = (merchant: Merchant) => {
-    return [
-      { name: 'Parking Lot', active: merchant.haveParkingLot },
-      { name: 'Garage', active: merchant.haveGarage },
-      { name: 'Dry Cleaner', active: merchant.haveDryCleaner },
-      { name: 'Residence Parking', active: merchant.haveResidenceParking },
+  const getMerchantServices = (merchant: Merchant) => [
+    { name: 'Parking Lot', active: merchant.haveParkingLot },
+    { name: 'Garage', active: merchant.haveGarage },
+    { name: 'Dry Cleaner', active: merchant.haveDryCleaner },
+    { name: 'Residence Parking', active: merchant.haveResidenceParking },
+  ];
+
+  // Filter merchants based on search
+  useEffect(() => {
+    const filtered = merchants.filter((merchant) => {
+      const fullName =
+        `${merchant.firstName} ${merchant.lastName}`.toLowerCase();
+      const email = merchant.email.toLowerCase();
+      const phone = merchant.phoneNumber;
+      const term = searchTerm.toLowerCase();
+      return (
+        fullName.includes(term) || email.includes(term) || phone.includes(term)
+      );
+    });
+    setFilteredMerchants(filtered);
+    setCurrentPage(1);
+  }, [searchTerm, merchants]);
+
+  // Pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredMerchants.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(filteredMerchants.length / itemsPerPage);
+
+  const exportToCSV = () => {
+    const headers = [
+      'Name',
+      'Email',
+      'Phone',
+      'Merchant Type',
+      'Has Bank Details',
     ];
+    const rows = filteredMerchants.map((m) => [
+      `"${m.firstName} ${m.lastName}"`,
+      m.email,
+      m.phoneNumber,
+      getMerchantType(m),
+      m.bankDetails ? 'Yes' : 'No',
+    ]);
+    const csvContent = [headers, ...rows]
+      .map((row) => row.join(','))
+      .join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'merchants.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
+
+  // Stats and chart data
+  const totalMerchants = merchants.length;
+  const merchantsWithBankDetails = merchants.filter(
+    (m) => m.bankDetails
+  ).length;
+
+  const serviceBarData = [
+    {
+      name: 'Parking Lot',
+      value: merchants.filter((m) => m.haveParkingLot).length,
+    },
+    { name: 'Garage', value: merchants.filter((m) => m.haveGarage).length },
+    {
+      name: 'Dry Cleaner',
+      value: merchants.filter((m) => m.haveDryCleaner).length,
+    },
+    {
+      name: 'Residence Parking',
+      value: merchants.filter((m) => m.haveResidenceParking).length,
+    },
+  ];
+
+  const servicePieData = serviceBarData.map((item, idx) => ({
+    ...item,
+    color: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'][idx % 4],
+  }));
 
   useEffect(() => {
     fetchMerchants();
@@ -227,10 +311,169 @@ export default function AllMerchantsTable() {
 
   return (
     <>
-      <Card className="border-0">
-        <CardHeader>
-          <CardTitle className="text-xl text-gray-800">All Merchants</CardTitle>
+      <Card className="border-0 shadow-sm">
+        <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate(-1)}
+              className="h-9 w-9 rounded-lg border border-gray-200 shadow-sm"
+              title="Go back"
+            >
+              <ArrowLeft className="w-5 h-5 text-gray-600" />
+            </Button>
+            <CardTitle className="text-xl text-gray-800">
+              All Merchants
+            </CardTitle>
+          </div>
+          <div className="text-sm text-gray-500">
+            Last updated: {new Date().toLocaleDateString()}
+          </div>
         </CardHeader>
+
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-6 pb-4">
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-none shadow-sm">
+            <CardContent className="p-4 flex items-center gap-4">
+              <Users className="w-8 h-8 text-blue-600" />
+              <div>
+                <p className="text-sm text-gray-600">Total Merchants</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {totalMerchants}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-green-50 to-green-100 border-none shadow-sm">
+            <CardContent className="p-4 flex items-center gap-4">
+              <Banknote className="w-8 h-8 text-green-600" />
+              <div>
+                <p className="text-sm text-gray-600">With Bank Details</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {merchantsWithBankDetails}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-none shadow-sm">
+            <CardContent className="p-4 flex items-center gap-4">
+              <Briefcase className="w-8 h-8 text-purple-600" />
+              <div>
+                <p className="text-sm text-gray-600">Active Services</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {serviceBarData.filter((s) => s.value > 0).length}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-none shadow-sm">
+            <CardContent className="p-4 flex items-center gap-4">
+              <TrendingUp className="w-8 h-8 text-orange-600" />
+              <div>
+                <p className="text-sm text-gray-600">Avg Services/Merchant</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {totalMerchants
+                    ? (
+                        merchants.reduce(
+                          (acc, m) =>
+                            acc +
+                            (m.haveParkingLot ? 1 : 0) +
+                            (m.haveGarage ? 1 : 0) +
+                            (m.haveDryCleaner ? 1 : 0) +
+                            (m.haveResidenceParking ? 1 : 0),
+                          0
+                        ) / totalMerchants
+                      ).toFixed(1)
+                    : '0'}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Charts Row */}
+        {!loading && totalMerchants > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-6 pb-4">
+            <Card className="shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-lg">
+                  Services Distribution (Bar)
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={serviceBarData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar
+                      dataKey="value"
+                      fill="#3b82f6"
+                      name="Number of Merchants"
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+            <Card className="shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-lg">
+                  Services Distribution (Pie)
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={servicePieData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={100}
+                      fill="#8884d8"
+                      dataKey="value"
+                      label={({ name, percent }) =>
+                        `${name}: ${(percent * 100).toFixed(0)}%`
+                      }
+                    >
+                      {servicePieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Search and Export */}
+        <div className="flex flex-wrap items-center justify-between gap-4 px-6 pb-4">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Search by name, email, phone..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          <Button
+            variant="outline"
+            onClick={exportToCSV}
+            className="flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" /> Export CSV
+          </Button>
+        </div>
+
+        {/* Table */}
         <CardContent>
           <div className="overflow-x-auto rounded-lg border border-gray-300">
             <Table className="border-collapse w-full">
@@ -239,7 +482,9 @@ export default function AllMerchantsTable() {
                   <TableHead className="border px-4 py-2">Name</TableHead>
                   <TableHead className="border px-4 py-2">Email</TableHead>
                   <TableHead className="border px-4 py-2">Phone</TableHead>
-                  <TableHead className="border px-4 py-2">Merchant Type</TableHead>
+                  <TableHead className="border px-4 py-2">
+                    Merchant Type
+                  </TableHead>
                   <TableHead className="border px-4 py-2">Actions</TableHead>
                   <TableHead className="border px-4 py-2">Details</TableHead>
                 </TableRow>
@@ -247,12 +492,15 @@ export default function AllMerchantsTable() {
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-6 text-gray-500">
+                    <TableCell
+                      colSpan={6}
+                      className="text-center py-6 text-gray-500"
+                    >
                       Loading...
                     </TableCell>
                   </TableRow>
-                ) : merchants.length > 0 ? (
-                  merchants.map((merchant) => (
+                ) : currentItems.length > 0 ? (
+                  currentItems.map((merchant) => (
                     <TableRow
                       key={merchant._id}
                       className="hover:bg-gray-50 transition duration-150"
@@ -293,7 +541,10 @@ export default function AllMerchantsTable() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-gray-500 py-6">
+                    <TableCell
+                      colSpan={6}
+                      className="text-center text-gray-500 py-6"
+                    >
                       No merchants found.
                     </TableCell>
                   </TableRow>
@@ -301,16 +552,50 @@ export default function AllMerchantsTable() {
               </TableBody>
             </Table>
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-4">
+              <div className="text-sm text-gray-500">
+                Showing {indexOfFirstItem + 1} to{' '}
+                {Math.min(indexOfLastItem, filteredMerchants.length)} of{' '}
+                {filteredMerchants.length} merchants
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <span className="text-sm text-gray-600">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Merchant Details Modal */}
       {showDetailsModal && selectedMerchant && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                <User className="w-6 h-6" />
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6 relative">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
+                <User className="w-5 h-5 sm:w-6 sm:h-6" />
                 Merchant Details
               </h2>
               <Button
@@ -323,16 +608,16 @@ export default function AllMerchantsTable() {
               </Button>
             </div>
 
-            {/* Merchant Information */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <h3 className="text-lg font-semibold mb-3 text-gray-800">
+            {/* Personal Info */}
+            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+              <h3 className="text-md font-semibold mb-2 text-gray-800">
                 Personal Information
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="flex items-center gap-2">
                   <User className="w-4 h-4 text-gray-600" />
                   <div>
-                    <span className="text-sm font-medium text-gray-700">Name:</span>
+                    <span className="text-xs text-gray-500">Name</span>
                     <p className="text-gray-900">
                       {selectedMerchant.firstName} {selectedMerchant.lastName}
                     </p>
@@ -341,24 +626,28 @@ export default function AllMerchantsTable() {
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-gray-600" />
                   <div>
-                    <span className="text-sm font-medium text-gray-700">Email:</span>
-                    <p className="text-gray-900">{selectedMerchant.email}</p>
+                    <span className="text-xs text-gray-500">Email</span>
+                    <p className="text-gray-900 break-all">
+                      {selectedMerchant.email}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-gray-600" />
                   <div>
-                    <span className="text-sm font-medium text-gray-700">Phone:</span>
-                    <p className="text-gray-900">{selectedMerchant.phoneNumber}</p>
+                    <span className="text-xs text-gray-500">Phone</span>
+                    <p className="text-gray-900">
+                      {selectedMerchant.phoneNumber}
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Services Offered */}
-            <div className="bg-blue-50 rounded-lg p-4 mb-6">
-              <h3 className="text-lg font-semibold mb-3 text-gray-800 flex items-center gap-2">
-                <Building className="w-5 h-5" />
+            <div className="bg-blue-50 rounded-lg p-4 mb-4">
+              <h3 className="text-md font-semibold mb-2 text-gray-800 flex items-center gap-2">
+                <Building className="w-4 h-4" />
                 Services Offered
               </h3>
               <div className="grid grid-cols-2 gap-2">
@@ -384,72 +673,75 @@ export default function AllMerchantsTable() {
 
             {/* Bank Details */}
             <div className="border border-gray-200 rounded-lg p-4">
-              <h3 className="text-lg font-semibold mb-3 text-gray-800 flex items-center gap-2">
-                <CreditCard className="w-5 h-5" />
+              <h3 className="text-md font-semibold mb-2 text-gray-800 flex items-center gap-2">
+                <CreditCard className="w-4 h-4" />
                 Bank Details
               </h3>
-
               {loadingBankDetails ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                  <span className="ml-3 text-gray-600">Loading bank details...</span>
+                <div className="flex items-center justify-center py-4">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                  <span className="ml-2 text-sm text-gray-600">Loading...</span>
                 </div>
               ) : bankDetails ? (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <span className="text-sm font-medium text-gray-700">Account Holder:</span>
-                      <p className="text-gray-900 font-medium">{bankDetails.accountHolderName}</p>
+                      <span className="text-xs text-gray-500">
+                        Account Holder
+                      </span>
+                      <p className="font-medium">
+                        {bankDetails.accountHolderName}
+                      </p>
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-gray-700">Account Number:</span>
-                      <p className="text-gray-900 font-mono">{bankDetails.accountNumber}</p>
+                      <span className="text-xs text-gray-500">
+                        Account Number
+                      </span>
+                      <p className="font-mono">{bankDetails.accountNumber}</p>
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-gray-700">Bank Name:</span>
-                      <p className="text-gray-900">{bankDetails.bankName || 'Not provided'}</p>
+                      <span className="text-xs text-gray-500">Bank Name</span>
+                      <p>{bankDetails.bankName || 'Not provided'}</p>
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-gray-700">IFSC Code:</span>
-                      <p className="text-gray-900 font-mono">{bankDetails.ifscCode}</p>
+                      <span className="text-xs text-gray-500">IFSC Code</span>
+                      <p className="font-mono">{bankDetails.ifscCode}</p>
                     </div>
                     {(bankDetails.branchName || bankDetails.branch) && (
                       <div>
-                        <span className="text-sm font-medium text-gray-700">Branch:</span>
-                        <p className="text-gray-900">{bankDetails.branchName || bankDetails.branch}</p>
+                        <span className="text-xs text-gray-500">Branch</span>
+                        <p>{bankDetails.branchName || bankDetails.branch}</p>
                       </div>
                     )}
                     {bankDetails.upiId && (
                       <div>
-                        <span className="text-sm font-medium text-gray-700">UPI ID:</span>
-                        <p className="text-gray-900 font-mono">{bankDetails.upiId}</p>
+                        <span className="text-xs text-gray-500">UPI ID</span>
+                        <p className="font-mono">{bankDetails.upiId}</p>
                       </div>
                     )}
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <CreditCard className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-gray-500 italic">No bank details found for this merchant.</p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    Bank details may not be configured yet.
+                <div className="text-center py-4">
+                  <CreditCard className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                  <p className="text-gray-500 text-sm">
+                    No bank details found.
                   </p>
                 </div>
               )}
             </div>
 
-            <div className="mt-6 flex justify-end gap-3">
+            <div className="mt-4 flex justify-end gap-2">
               <Button
-                onClick={() => navigate(`/admin/merchant/${selectedMerchant._id}`)}
+                onClick={() =>
+                  navigate(`/admin/merchant/${selectedMerchant._id}`)
+                }
                 variant="outline"
-                className="px-6"
+                size="sm"
               >
-                Go to Full Details
+                Full Details
               </Button>
-              <Button
-                onClick={closeDetailsModal}
-                className="px-6"
-              >
+              <Button onClick={closeDetailsModal} size="sm">
                 Close
               </Button>
             </div>

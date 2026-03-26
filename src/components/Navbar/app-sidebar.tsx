@@ -39,10 +39,10 @@ const data = {
       icon: HomeIcon,
       isActive: true,
       items: [
-        {
-          title: 'Overview',
-          url: '/',
-        },
+        // {
+        //   title: 'Overview',
+        //   url: '/',
+        // },
         {
           title: 'Users',
           url: '/users',
@@ -51,43 +51,43 @@ const data = {
           title: 'Merchants',
           url: '/merchants',
         },
-        {
-          title: 'Delivery Partners',
-          url: '#',
-        },
+        // {
+        //   title: 'Delivery Partners',
+        //   url: '#',
+        // },
       ],
     },
-    {
-      title: 'Laundry',
-      url: '#',
-      icon: Shirt,
-      isActive: false,
-      items: [
-        {
-          title: 'Laundry Owners',
-          url: '/laundry-owners',
-        },
-        {
-          title: 'Customer Reviews',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Ride Share',
-      url: '#',
-      icon: Car,
-      items: [
-        {
-          title: 'Vehicle Owners',
-          url: '/vehicle-owners',
-        },
-        {
-          title: 'Customer Reviews',
-          url: '#',
-        },
-      ],
-    },
+    // {
+    //   title: 'Laundry',
+    //   url: '#',
+    //   icon: Shirt,
+    //   isActive: false,
+    //   items: [
+    //     {
+    //       title: 'Laundry Owners',
+    //       url: '/laundry-owners',
+    //     },
+    //     {
+    //       title: 'Customer Reviews',
+    //       url: '#',
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: 'Ride Share',
+    //   url: '#',
+    //   icon: Car,
+    //   items: [
+    //     {
+    //       title: 'Vehicle Owners',
+    //       url: '/vehicle-owners',
+    //     },
+    //     {
+    //       title: 'Customer Reviews',
+    //       url: '#',
+    //     },
+    //   ],
+    // },
     {
       title: 'Car Parking',
       url: '#',
@@ -108,82 +108,82 @@ const data = {
       ],
     },
     {
-  title: 'Dry Cleaners',
-  url: '/dry-cleaners',
-  icon: Shirt,
-  items: [
-    {
-      title: 'All Dry Cleaners',
-      url: '/dry-cleaner-owners',
+      title: 'Dry Cleaners',
+      url: '/dry-cleaners',
+      icon: Shirt,
+      items: [
+        {
+          title: 'All Dry Cleaners',
+          url: '/dry-cleaner-owners',
+        },
+        {
+          title: 'Set driver Fees',
+          url: '/driver-fees',
+        },
+      ],
     },
-    {
-      title: 'Set driver Fees',
-      url: '/driver-fees',
-    },
-  ],
-},
 
-    {
-      title: 'Food Delivery',
-      url: '#',
-      icon: Pizza,
-      items: [
-        {
-          title: 'Restaurant Owners',
-          url: '#',
-        },
-        {
-          title: 'Customer Reviews',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Documentation',
-      url: '#',
-      icon: BookOpen,
-      items: [
-        {
-          title: 'Introduction',
-          url: '#',
-        },
-        {
-          title: 'Get Started',
-          url: '#',
-        },
-        {
-          title: 'Tutorials',
-          url: '#',
-        },
-        {
-          title: 'Changelog',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Settings',
-      url: '#',
-      icon: Settings2,
-      items: [
-        {
-          title: 'General',
-          url: '#',
-        },
-        {
-          title: 'Team',
-          url: '#',
-        },
-        {
-          title: 'Billing',
-          url: '#',
-        },
-        {
-          title: 'Limits',
-          url: '#',
-        },
-      ],
-    },
+    // {
+    //   title: 'Food Delivery',
+    //   url: '#',
+    //   icon: Pizza,
+    //   items: [
+    //     {
+    //       title: 'Restaurant Owners',
+    //       url: '#',
+    //     },
+    //     {
+    //       title: 'Customer Reviews',
+    //       url: '#',
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: 'Documentation',
+    //   url: '#',
+    //   icon: BookOpen,
+    //   items: [
+    //     {
+    //       title: 'Introduction',
+    //       url: '#',
+    //     },
+    //     {
+    //       title: 'Get Started',
+    //       url: '#',
+    //     },
+    //     {
+    //       title: 'Tutorials',
+    //       url: '#',
+    //     },
+    //     {
+    //       title: 'Changelog',
+    //       url: '#',
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: 'Settings',
+    //   url: '#',
+    //   icon: Settings2,
+    //   items: [
+    //     {
+    //       title: 'General',
+    //       url: '#',
+    //     },
+    //     {
+    //       title: 'Team',
+    //       url: '#',
+    //     },
+    //     {
+    //       title: 'Billing',
+    //       url: '#',
+    //     },
+    //     {
+    //       title: 'Limits',
+    //       url: '#',
+    //     },
+    //   ],
+    // },
   ],
 };
 
