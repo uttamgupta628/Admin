@@ -9,7 +9,6 @@ import {
   ShoppingBag,
   X,
   Clock,
-  DollarSign,
   Package,
   Search,
   Download,

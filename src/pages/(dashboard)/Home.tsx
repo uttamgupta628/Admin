@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import NavbarWrapper from '@/components/Wrapper/NavbarWrapper';
 import { useNavigate } from 'react-router-dom';
 import {
-  BarChart,
-  Bar,
+  // BarChart,
+  // Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -25,9 +25,9 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Activity,
-  UserCheck,
+  // UserCheck,
   Briefcase,
-  Calendar,
+  // Calendar,
   LogOut,
 } from 'lucide-react';
 import TopMerchantsTable from '@/components/Dashboard/TopMerchantsTable';

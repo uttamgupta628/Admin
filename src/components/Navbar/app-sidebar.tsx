@@ -1,11 +1,11 @@
 import * as React from 'react';
 import {
-  BookOpen,
-  Car,
+  // BookOpen,
+  // Car,
   HomeIcon,
   ParkingCircle,
-  Pizza,
-  Settings2,
+  // Pizza,
+  // Settings2,
   Shirt,
 } from 'lucide-react';
 
