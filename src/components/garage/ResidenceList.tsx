@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 interface Residence {
   _id: string;
@@ -31,7 +31,7 @@ const ResidenceList: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
 
   const fetchResidences = async () => {
     try {
@@ -41,7 +41,7 @@ const ResidenceList: React.FC = () => {
       );
       setResidences(res.data.data);
     } catch (err) {
-      console.error("Failed to fetch residences:", err);
+      console.error('Failed to fetch residences:', err);
     }
   };
 
@@ -54,7 +54,7 @@ const ResidenceList: React.FC = () => {
       setSelectedResidence(res.data.data);
       setCurrentImageIndex(0);
     } catch (err) {
-      console.error("Failed to fetch residence details:", err);
+      console.error('Failed to fetch residence details:', err);
     }
   };
 
@@ -66,31 +66,29 @@ const ResidenceList: React.FC = () => {
       );
       setBookings(res.data.data);
     } catch (err) {
-      console.error("Failed to fetch bookings:", err);
+      console.error('Failed to fetch bookings:', err);
       setBookings([]);
     }
   };
 
   const handleDeleteResidence = async (id: string) => {
-  if (!window.confirm("Are you sure you want to delete this residence?"))
-    return;
+    if (!window.confirm('Are you sure you want to delete this residence?'))
+      return;
 
-  try {
-    await axios.delete(
-  `${import.meta.env.VITE_API_URL}/api/users/admin/delete-residence/${id}`,
-  { headers: { Authorization: `Bearer ${token}` } }
-);
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/users/admin/delete-residence/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-    setSelectedResidence(null);
-    fetchResidences();
-    alert("Residence deleted successfully.");
-  } catch (err) {
-    console.error("Failed to delete residence:", err);
-    alert("Failed to delete residence.");
-  }
-};
-
-
+      setSelectedResidence(null);
+      fetchResidences();
+      alert('Residence deleted successfully.');
+    } catch (err) {
+      console.error('Failed to delete residence:', err);
+      alert('Failed to delete residence.');
+    }
+  };
 
   useEffect(() => {
     fetchResidences();
@@ -127,7 +125,7 @@ const ResidenceList: React.FC = () => {
                   src={
                     residence.images && residence.images.length > 0
                       ? residence.images[0]
-                      : "https://via.placeholder.com/400x200?text=No+Image"
+                      : 'https://via.placeholder.com/400x200?text=No+Image'
                   }
                   alt={residence.residenceName}
                   className="h-full w-full object-cover"
@@ -136,7 +134,7 @@ const ResidenceList: React.FC = () => {
                   <h2 className="text-xl font-semibold text-white">
                     {residence.residenceName}
                   </h2>
-                  <p className="text-sm text-white/90">₹{residence.price}</p>
+                  <p className="text-sm text-white/90">${residence.price}</p>
                 </div>
               </div>
 
@@ -207,8 +205,7 @@ const ResidenceList: React.FC = () => {
                     <button
                       onClick={() =>
                         setCurrentImageIndex(
-                          (prev) =>
-                            (prev + 1) % selectedResidence.images.length
+                          (prev) => (prev + 1) % selectedResidence.images.length
                         )
                       }
                       className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
@@ -238,7 +235,7 @@ const ResidenceList: React.FC = () => {
                   📍 <strong>{selectedResidence.address}</strong>
                 </p>
                 <p>
-                  💰 <strong>₹{selectedResidence.price}</strong>
+                  💰 <strong>${selectedResidence.price}</strong>
                 </p>
               </div>
 
@@ -265,15 +262,15 @@ const ResidenceList: React.FC = () => {
                           <strong>Slot:</strong> {b.bookedSlot}
                         </div>
                         <div>
-                          <strong>From:</strong>{" "}
+                          <strong>From:</strong>{' '}
                           {new Date(b.bookingPeriod.from).toLocaleString()}
                         </div>
                         <div>
-                          <strong>To:</strong>{" "}
+                          <strong>To:</strong>{' '}
                           {new Date(b.bookingPeriod.to).toLocaleString()}
                         </div>
                         <div>
-                          <strong>Amount Paid:</strong> ₹
+                          <strong>Amount Paid:</strong> $
                           {b.amountToPaid.toLocaleString()}
                         </div>
                       </div>

@@ -371,7 +371,11 @@ export default function AllMerchantsTable() {
             <CardContent className="p-4 flex items-center gap-4">
               <TrendingUp className="w-8 h-8 text-orange-600" />
               <div>
-                <p className="text-sm text-gray-600">Avg Services/Merchant</p>
+                <p className="text-sm text-gray-600">
+                  Avg Services/
+                  <br />
+                  Merchant
+                </p>
                 <p className="text-2xl font-bold text-gray-800">
                   {totalMerchants
                     ? (

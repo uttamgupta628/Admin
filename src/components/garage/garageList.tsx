@@ -313,7 +313,7 @@ const GarageList: React.FC = () => {
                     <div className="bg-gray-50 p-2 rounded">
                       <p className="text-gray-500 font-medium">Earnings</p>
                       <p className="text-gray-900 font-semibold">
-                        ₹{garage.totalAmount?.toLocaleString() ?? 0}
+                        ${garage.totalAmount?.toLocaleString() ?? 0}
                       </p>
                     </div>
                   </div>
@@ -484,7 +484,7 @@ const GarageList: React.FC = () => {
                       {selectedGarage.totalBookings ?? 0}
                     </p>
                     <p className="text-gray-700 mt-1">
-                      <span className="font-medium">Total Earnings:</span> ₹
+                      <span className="font-medium">Total Earnings:</span> $
                       {selectedGarage.totalAmount?.toLocaleString() ?? 0}
                     </p>
                     <p className="text-gray-700 mt-1">
@@ -513,7 +513,7 @@ const GarageList: React.FC = () => {
                               Count: {value.count}
                             </div>
                             <div className="text-sm text-gray-600">
-                              Price: ₹{value.price}
+                              Price: ${value.price}
                             </div>
                           </div>
                         )

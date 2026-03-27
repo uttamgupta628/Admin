@@ -148,7 +148,7 @@ const ParkingLotList: React.FC = () => {
                     {lot.parkingName}
                   </h2>
                   <p className="text-sm text-white/90">
-                    ₹{lot.price} / vehicle
+                    ${lot.price} / vehicle
                   </p>
                 </div>
               </div>
@@ -296,7 +296,7 @@ const ParkingLotList: React.FC = () => {
                       Pricing
                     </h3>
                     <p className="text-sm text-gray-600">
-                      <span className="font-medium">Base Price:</span> ₹
+                      <span className="font-medium">Base Price:</span> $
                       {selectedLot.price}
                     </p>
                   </div>
@@ -325,7 +325,7 @@ const ParkingLotList: React.FC = () => {
                               </span>
                             </div>
                             <div className="mt-1 text-sm text-gray-600">
-                              Price: ₹{value.price}
+                              Price: ${value.price}
                             </div>
                           </div>
                         )
@@ -400,7 +400,7 @@ const ParkingLotList: React.FC = () => {
                             <strong>Total Hours:</strong> {b.totalHours}
                           </div>
                           <div>
-                            <strong>Amount Paid:</strong> ₹
+                            <strong>Amount Paid:</strong> $
                             {b.amountToPaid.toLocaleString()}
                           </div>
                         </div>

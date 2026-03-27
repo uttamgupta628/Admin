@@ -79,7 +79,7 @@ const GlobalPricingManagement = () => {
       return;
     }
     if (price > 1000) {
-      setError('Price per km cannot exceed ₹1000');
+      setError('Price per km cannot exceed $1000');
       return;
     }
     try {
@@ -104,7 +104,7 @@ const GlobalPricingManagement = () => {
       const data: ApiResponse = await response.json();
       if (!response.ok)
         throw new Error(data.message || 'Failed to set pricing');
-      setSuccess(`Global pricing successfully set to ₹${price}/km`);
+      setSuccess(`Global pricing successfully set to $${price}/km`);
       setCurrentPricing(data.data.pricing);
       setEffectiveFrom('');
       setReason('');
@@ -461,7 +461,7 @@ const GlobalPricingManagement = () => {
                     </span>
                   </div>
                   <div style={{ fontSize: '2.25rem', fontWeight: 'bold' }}>
-                    ₹{currentPricing.pricePerKm}
+                    ${currentPricing.pricePerKm}
                   </div>
                 </div>
                 <div
@@ -608,7 +608,7 @@ const GlobalPricingManagement = () => {
                     marginBottom: '0.5rem',
                   }}
                 >
-                  Price per KM (₹) *
+                  Price per KM ($) *
                 </label>
                 <div style={{ position: 'relative' }}>
                   <div
@@ -623,7 +623,7 @@ const GlobalPricingManagement = () => {
                       pointerEvents: 'none',
                     }}
                   >
-                    <span style={{ color: '#6b7280' }}>₹</span>
+                    <span style={{ color: '#6b7280' }}>$</span>
                   </div>
                   <input
                     type="number"
@@ -654,7 +654,7 @@ const GlobalPricingManagement = () => {
                     color: '#6b7280',
                   }}
                 >
-                  Must be between ₹0.01 and ₹1000
+                  Must be between $0.01 and $1000
                 </p>
               </div>
 

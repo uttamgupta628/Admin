@@ -373,7 +373,7 @@ const DryCleanerList: React.FC = () => {
                     <div className="bg-gray-50 p-2 rounded">
                       <p className="text-gray-500 font-medium">Earnings</p>
                       <p className="text-gray-900 font-semibold">
-                        ₹{cleaner.totalAmount?.toLocaleString() ?? 0}
+                        ${cleaner.totalAmount?.toLocaleString() ?? 0}
                       </p>
                     </div>
                   </div>
@@ -539,7 +539,7 @@ const DryCleanerList: React.FC = () => {
                       {selectedDryCleaner.totalBookings ?? 0}
                     </p>
                     <p className="text-gray-700 mt-1">
-                      <span className="font-medium">Total Earnings:</span> ₹
+                      <span className="font-medium">Total Earnings:</span> $
                       {selectedDryCleaner.totalAmount?.toLocaleString() ?? 0}
                     </p>
                     <p className="text-gray-700 mt-1">
@@ -624,7 +624,7 @@ const DryCleanerList: React.FC = () => {
                             </div>
                             <div className="text-right">
                               <div className="font-bold text-gray-900">
-                                ₹{service.price}
+                                ${service.price}
                               </div>
                               {service.starchLevel > 0 && (
                                 <div className="text-sm text-gray-500">

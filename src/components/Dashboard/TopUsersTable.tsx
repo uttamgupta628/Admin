@@ -548,7 +548,7 @@ export default function AllUsersTable() {
                                   {item.quantity}
                                 </td>
                                 <td className="py-2 text-right text-gray-800">
-                                  ₹{item.price}
+                                  ${item.price}
                                 </td>
                               </tr>
                             ))}
@@ -562,7 +562,7 @@ export default function AllUsersTable() {
                                 Total:
                               </td>
                               <td className="py-2 text-right font-bold text-gray-900">
-                                ₹{order.totalAmount.toLocaleString()}
+                                ${order.totalAmount.toLocaleString()}
                               </td>
                             </tr>
                           </tfoot>
